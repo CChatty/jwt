@@ -34,15 +34,14 @@ class KeyParser
 
     public static function create(GmpMathInterface $adapter): KeyParser
     {
-        $publicKeySerializer = new PemPublicKeySerializer(
-            new DerPublicKeySerializer($adapter)
-        );
+        $derPublicKeySerializer = new DerPublicKeySerializer($adapter);
+        $pemPublicKeySerializer = new PemPublicKeySerializer($derPublicKeySerializer);
 
         return new self(
             new PemPrivateKeySerializer(
-                new DerPrivateKeySerializer($adapter, $publicKeySerializer)
+                new DerPrivateKeySerializer($adapter, $derPublicKeySerializer)
             ),
-            $publicKeySerializer
+            $pemPublicKeySerializer
         );
     }
 

@@ -8,6 +8,7 @@ use Mdanter\Ecc\Crypto\Key\PrivateKeyInterface;
 use Mdanter\Ecc\Crypto\Key\PublicKeyInterface;
 use Mdanter\Ecc\Crypto\Signature\SignatureInterface;
 use Mdanter\Ecc\Crypto\Signature\Signer;
+use Mdanter\Ecc\Crypto\Signature\SignHasher;
 use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\Math\GmpMathInterface;
 use Mdanter\Ecc\Primitives\GeneratorPoint;
@@ -195,10 +196,8 @@ final class EccAdapterTest extends \PHPUnit\Framework\TestCase
                         ->method('generator256')
                         ->willReturn($generatorPoint);
 
-        $this->signer->expects($this->once())
-                     ->method('hashData')
-                     ->with($generatorPoint, 'sha256', 'testing')
-                     ->willReturn($signingHash);
+        $hasher      = new SignHasher('sha256');
+        $signingHash = $hasher->makeHash('testing', $generatorPoint);
 
         $adapter = $this->createAdapter();
 

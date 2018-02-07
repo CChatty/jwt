@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use Mdanter\Ecc\Crypto\Key\PrivateKeyInterface;
 use Mdanter\Ecc\Crypto\Key\PublicKeyInterface;
 use Mdanter\Ecc\Crypto\Signature\Signer;
+use Mdanter\Ecc\Crypto\Signature\SignHasher;
 use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Math\GmpMathInterface;
@@ -104,10 +105,8 @@ class EccAdapter
         string $payload,
         string $algorithm
     ): GMP {
-        return $this->signer->hashData(
-            $this->generatorPoint($algorithm),
-            $algorithm,
-            $payload
+        return (new SignHasher($algorithm))->makeHash(
+            $payload, $this->generatorPoint($algorithm)
         );
     }
 
